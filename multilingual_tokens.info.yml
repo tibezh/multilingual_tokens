@@ -1,0 +1,10 @@
+name: Multilingual Tokens
+type: module
+description: 'Provides tokens with multilingual support.'
+core_version_requirement: ^10 || ^11
+package: Custom
+php: 8.0
+dependencies:
+  - drupal:language
+  - drupal:content_translation
+  - drupal:token

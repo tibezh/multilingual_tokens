@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file
+ * Contains multilingual_tokens.module.
+ */
+
+use Drupal\Core\Render\BubbleableMetadata;
+
+/**
+ * Implements hook_token_info().
+ */
+function multilingual_tokens_token_info(): array {
+  /** @var \Drupal\multilingual_tokens\Token\MultilingualTokenProvider $token_provider */
+  $token_provider = \Drupal::service('multilingual_tokens.token_provider');
+  return $token_provider->getTokenInfo();
+}
+
+/**
+ * Implements hook_tokens_alter().
+ */
+function multilingual_tokens_tokens_alter(array &$replacements, array $context, BubbleableMetadata $bubbleable_metadata): void {
+  /** @var \Drupal\multilingual_tokens\Token\MultilingualTokenProvider $token_provider */
+  $token_provider = \Drupal::service('multilingual_tokens.token_provider');
+
+  // Process tokens with _lang_ suffix only and replace.
+  $module_replacements = $token_provider->replaceTokens(
+    $context['type'],
+    $context['tokens'],
+    $context['data'],
+    $context['options'],
+    $bubbleable_metadata
+  );
+
+  foreach ($module_replacements as $token => $replacement) {
+    $replacements[$token] = $replacement;
+  }
+}
