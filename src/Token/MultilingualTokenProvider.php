@@ -215,16 +215,32 @@ class MultilingualTokenProvider {
             $full_base_token = "{$type}:{$parsed_token['base_token']}";
             $base_token_markup = "[{$full_base_token}]";
 
-            $replacement = $this->token->replace(
-              $base_token_markup,
-              $translation_data,
-              $translation_options,
-              $bubbleable_metadata
-            );
+            // Override config language to get translated labels for
+            // list fields and other config-translated values.
+            $original_language = $this->languageManager->getConfigOverrideLanguage();
+            $target_language = $this->languageManager->getLanguage($parsed_token['langcode']);
+            if ($target_language) {
+              $this->languageManager->setConfigOverrideLanguage($target_language);
+            }
 
-            // Add to results if replacement is successful.
-            if ($replacement !== $base_token_markup) {
-              $replacements[$original] = $replacement;
+            try {
+              $replacement = $this->token->replace(
+                $base_token_markup,
+                $translation_data,
+                $translation_options,
+                $bubbleable_metadata
+              );
+
+              // Add to results if replacement is successful.
+              if ($replacement !== $base_token_markup) {
+                $replacements[$original] = $replacement;
+                // Add cache context for language-specific output.
+                $bubbleable_metadata->addCacheContexts(['languages:language_content']);
+              }
+            }
+            finally {
+              // Restore original config language.
+              $this->languageManager->setConfigOverrideLanguage($original_language);
             }
           }
         }
