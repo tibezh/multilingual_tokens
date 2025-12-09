@@ -45,3 +45,68 @@ Where:
 - `[taxonomy_term:name:_lang_fr]` - Displays the taxonomy term name in French;
 - `[node:title:_lang_en-gb]` - Displays the node title in British English (the `en-gb` suffix is langcode);
 - `[node:body:_lang_en_us]` - Displays the node body in American English (the `en_us` suffix is langcode).
+
+## DEVELOPERS
+
+### TokenReplacementEvent
+
+The module dispatches a `TokenReplacementEvent` before processing each
+multilingual token. This allows other modules to customize or override the
+token replacement logic.
+
+**Event name:** `multilingual_tokens.before_replacement`
+
+**Example event subscriber:**
+
+```php
+<?php
+
+namespace Drupal\my_module\EventSubscriber;
+
+use Drupal\multilingual_tokens\Event\TokenReplacementEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+
+class TokenSubscriber implements EventSubscriberInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getSubscribedEvents(): array {
+    return [
+      TokenReplacementEvent::NAME => 'onTokenReplacement',
+    ];
+  }
+
+  /**
+   * Handles multilingual token replacement.
+   */
+  public function onTokenReplacement(TokenReplacementEvent $event): void {
+    // Get token information.
+    $token_type = $event->getTokenType();
+    $base_token = $event->getBaseToken();
+    $langcode = $event->getLangcode();
+    $entity = $event->getEntity();
+    $translated_entity = $event->getTranslatedEntity();
+
+    // Option 1: Provide custom replacement.
+    $event->setReplacement('Custom value');
+
+    // Option 2: Skip this token (no replacement).
+    $event->skipReplacement();
+
+    // Option 3: Modify the translated entity.
+    $event->setTranslatedEntity($different_entity);
+  }
+
+}
+```
+
+**Register the subscriber in `my_module.services.yml`:**
+
+```yaml
+services:
+  my_module.token_subscriber:
+    class: Drupal\my_module\EventSubscriber\TokenSubscriber
+    tags:
+      - { name: event_subscriber }
+```
