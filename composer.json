@@ -1,0 +1,24 @@
+{
+  "name": "drupal/multilingual_tokens",
+  "description": "Provides tokens with multilingual support for content entities.",
+  "type": "drupal-module",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://www.drupal.org/project/multilingual_tokens",
+  "support": {
+    "source": "https://git.drupalcode.org/project/multilingual_tokens"
+  },
+  "require": {
+    "php": ">=8.3",
+    "drupal/core": "^10.3 || ^11"
+  },
+  "require-dev": {
+    "drupal/coder": "^8.3",
+    "mglaman/phpstan-drupal": "^1.1 || ^2.0",
+    "phpstan/phpstan-deprecation-rules": "^1.1 || ^2.0"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}

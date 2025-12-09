@@ -55,7 +55,7 @@ class MultilingualTokenProvider {
   /**
    * Gets the token info provided by this module.
    *
-   * @return array
+   * @return array<string, array<string, array<string, array<string, string>>>>
    *   An array of token info.
    */
   public function getTokenInfo(): array {
@@ -83,7 +83,7 @@ class MultilingualTokenProvider {
    * @param \Drupal\Core\Entity\EntityTypeInterface[] $content_entity_types
    *   An array of content entity types.
    *
-   * @return array
+   * @return array<string, array<string, array<string, array<string, string>>>>
    *   An array of token info.
    */
   protected function buildTokenInfoForLanguages(array $content_entity_types): array {
@@ -114,7 +114,8 @@ class MultilingualTokenProvider {
    *   The token name (without brackets).
    *
    * @return array{base_token: string, langcode: string}|null
-   *   Array with 'base_token' and 'langcode' keys, or NULL if not a language token.
+   *   Array with 'base_token' and 'langcode' keys, or NULL if not
+   *   a language token.
    */
   protected function parseLanguageToken(string $name): ?array {
     if (preg_match('/^(.+):_lang_([a-z\-_]+)$/', $name, $matches)) {
@@ -131,16 +132,16 @@ class MultilingualTokenProvider {
    *
    * @param string $type
    *   The token type (e.g., 'node', 'user').
-   * @param array $tokens
+   * @param array<string, string> $tokens
    *   An array of tokens to be replaced, keyed by token name.
-   * @param array $data
+   * @param array<string, mixed> $data
    *   An associative array of data objects to use for token replacement.
-   * @param array $options
+   * @param array<string, mixed> $options
    *   An associative array of options for token replacement.
    * @param \Drupal\Core\Render\BubbleableMetadata $bubbleable_metadata
    *   The bubbleable metadata for cacheability.
    *
-   * @return array
+   * @return array<string, string>
    *   An array of replacement values keyed by the original token.
    */
   public function replaceTokens(
@@ -175,7 +176,7 @@ class MultilingualTokenProvider {
           if ($entity->isTranslatable() && $entity->hasTranslation($parsed_token['langcode'])) {
             $translated_entity = $entity->getTranslation($parsed_token['langcode']);
 
-            // Dispatch event to allow other modules to modify the replacement logic.
+            // Dispatch event to allow other modules to modify replacement.
             $event = new TokenReplacementEvent(
               $type,
               $parsed_token['base_token'],
@@ -210,7 +211,7 @@ class MultilingualTokenProvider {
               'langcode' => $parsed_token['langcode'],
             ]);
 
-            // Create full base token: entity_type + : + field_name
+            // Create full base token (entity_type:field_name).
             $full_base_token = "{$type}:{$parsed_token['base_token']}";
             $base_token_markup = "[{$full_base_token}]";
 

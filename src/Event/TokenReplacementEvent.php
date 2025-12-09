@@ -28,6 +28,25 @@ class TokenReplacementEvent extends Event {
 
   /**
    * Constructs a new TokenReplacementEvent.
+   *
+   * @param string $tokenType
+   *   The token type.
+   * @param string $baseToken
+   *   The base token name.
+   * @param string $langcode
+   *   The language code.
+   * @param string $originalToken
+   *   The original token.
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   The original entity.
+   * @param \Drupal\Core\Entity\ContentEntityInterface $translatedEntity
+   *   The translated entity.
+   * @param array<string, mixed> $data
+   *   The token data.
+   * @param array<string, mixed> $options
+   *   The token options.
+   * @param \Drupal\Core\Render\BubbleableMetadata $bubbleableMetadata
+   *   The bubbleable metadata.
    */
   public function __construct(
     protected string $tokenType,
@@ -38,8 +57,8 @@ class TokenReplacementEvent extends Event {
     protected ContentEntityInterface $translatedEntity,
     protected array $data,
     protected array $options,
-    protected BubbleableMetadata $bubbleableMetadata
-  ) { }
+    protected BubbleableMetadata $bubbleableMetadata,
+  ) {}
 
   /**
    * Gets the token type.
@@ -114,7 +133,7 @@ class TokenReplacementEvent extends Event {
   /**
    * Gets the token data.
    *
-   * @return array
+   * @return array<string, mixed>
    *   An associative array of data objects for token replacement.
    */
   public function getData(): array {
@@ -124,7 +143,7 @@ class TokenReplacementEvent extends Event {
   /**
    * Sets the token data.
    *
-   * @param array $data
+   * @param array<string, mixed> $data
    *   An associative array of data objects for token replacement.
    */
   public function setData(array $data): void {
@@ -134,7 +153,7 @@ class TokenReplacementEvent extends Event {
   /**
    * Gets the token options.
    *
-   * @return array
+   * @return array<string, mixed>
    *   An associative array of options for token replacement.
    */
   public function getOptions(): array {
@@ -144,7 +163,7 @@ class TokenReplacementEvent extends Event {
   /**
    * Sets the token options.
    *
-   * @param array $options
+   * @param array<string, mixed> $options
    *   An associative array of options for token replacement.
    */
   public function setOptions(array $options): void {
