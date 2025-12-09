@@ -1,1 +1,20 @@
+# Composer
 /vendor/
+composer.lock
+
+# IDE and editors
+/.idea/
+/.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache/
+
+# PHPStan
+phpstan.neon.dist.local
