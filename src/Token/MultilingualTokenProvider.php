@@ -21,7 +21,9 @@ class MultilingualTokenProvider {
   use StringTranslationTrait;
 
   /**
-   * Recursion protection.
+   * Tracks tokens currently being processed to prevent infinite recursion.
+   *
+   * @var array<string, bool>
    */
   protected static array $processing = [];
 
@@ -69,9 +71,10 @@ class MultilingualTokenProvider {
    */
   protected function getContentEntityTypes(): array {
     $entity_types = $this->entityTypeManager->getDefinitions();
-    return array_filter($entity_types, function ($entity_type) {
-      return $entity_type->entityClassImplements(ContentEntityInterface::class);
-    });
+    return array_filter(
+      $entity_types,
+      fn($entity_type) => $entity_type->entityClassImplements(ContentEntityInterface::class)
+    );
   }
 
   /**
@@ -105,7 +108,13 @@ class MultilingualTokenProvider {
   }
 
   /**
-   * Parses a token KEY (without brackets) to check if it has a language suffix.
+   * Parses a token name to extract language suffix information.
+   *
+   * @param string $name
+   *   The token name (without brackets).
+   *
+   * @return array{base_token: string, langcode: string}|null
+   *   Array with 'base_token' and 'langcode' keys, or NULL if not a language token.
    */
   protected function parseLanguageToken(string $name): ?array {
     if (preg_match('/^(.+):_lang_([a-z\-_]+)$/', $name, $matches)) {
@@ -118,7 +127,21 @@ class MultilingualTokenProvider {
   }
 
   /**
-   * Replaces multilingual tokens.
+   * Replaces multilingual tokens with translated values.
+   *
+   * @param string $type
+   *   The token type (e.g., 'node', 'user').
+   * @param array $tokens
+   *   An array of tokens to be replaced, keyed by token name.
+   * @param array $data
+   *   An associative array of data objects to use for token replacement.
+   * @param array $options
+   *   An associative array of options for token replacement.
+   * @param \Drupal\Core\Render\BubbleableMetadata $bubbleable_metadata
+   *   The bubbleable metadata for cacheability.
+   *
+   * @return array
+   *   An array of replacement values keyed by the original token.
    */
   public function replaceTokens(
     string $type,

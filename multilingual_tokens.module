@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains multilingual_tokens.module.
+ * Provides multilingual token support for content entities.
  */
 
 use Drupal\Core\Render\BubbleableMetadata;
@@ -32,7 +32,5 @@ function multilingual_tokens_tokens_alter(array &$replacements, array $context, 
     $bubbleable_metadata
   );
 
-  foreach ($module_replacements as $token => $replacement) {
-    $replacements[$token] = $replacement;
-  }
+  $replacements = array_merge($replacements, $module_replacements);
 }

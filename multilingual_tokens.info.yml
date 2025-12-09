@@ -3,7 +3,7 @@ type: module
 description: 'Provides tokens with multilingual support.'
 core_version_requirement: ^10 || ^11
 package: Custom
-php: 8.0
+php: 8.3
 dependencies:
   - drupal:language
   - drupal:content_translation
